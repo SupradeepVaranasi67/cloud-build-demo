@@ -19,3 +19,6 @@ steps:
 
 images:
 - 'us-east1-docker.pkg.dev/gcp-demo-project-487205/cloud-build-demo/static-site:v1'
+
+options:
+  logging: 'CLOUD_LOGGING_ONLY'
