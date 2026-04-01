@@ -1,0 +1,21 @@
+steps:
+# 1. Build image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-east1-docker.pkg.dev/gcp-demo-project-487205/cloud-build-demo/static-site:v1', '.']
+
+# 2. Push image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-east1-docker.pkg.dev/gcp-demo-project-487205/cloud-build-demo/static-site:v1']
+
+# 3. Deploy to GKE
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+    - apply
+    - -f
+    - k8s.yaml
+  env:
+    - 'CLOUDSDK_COMPUTE_REGION=us-east1'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=terraform-gke-cluster'
+
+images:
+- 'us-east1-docker.pkg.dev/gcp-demo-project-487205/cloud-build-demo/static-site:v1'
