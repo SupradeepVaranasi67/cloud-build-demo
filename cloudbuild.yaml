@@ -5,7 +5,7 @@ steps:
 
 # 2. Push image
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-east1-docker.pkg.dev/gcp-demo-project-487205/cloud-build-demo/static-site:SHORT_SHA']
+  args: ['push', 'us-east1-docker.pkg.dev/gcp-demo-project-487205/cloud-build-demo/static-site:$SHORT_SHA']
 
 # 3. Deploy to GKE
 - name: 'gcr.io/cloud-builders/kubectl'
@@ -19,7 +19,7 @@ steps:
     - 'CLOUDSDK_CONTAINER_CLUSTER=terraform-gke-cluster'
 
 images:
-- 'us-east1-docker.pkg.dev/gcp-demo-project-487205/cloud-build-demo/static-site:SHORT_SHA'
+- 'us-east1-docker.pkg.dev/gcp-demo-project-487205/cloud-build-demo/static-site:$SHORT_SHA'
 
 options:
   logging: 'CLOUD_LOGGING_ONLY'
