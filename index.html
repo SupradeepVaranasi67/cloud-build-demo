@@ -1,4 +1,184 @@
-<h1>Hello from GKE!!</h1>
-<p>This is your first Cloud Build pipeline</p>
-<br>
-<p>this is the 2nd test fro thje cloud build trigger</p>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodieHub | Delicious Recipes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .recipe-card:hover { transform: translateY(-5px); transition: all 0.3s ease; cursor: pointer; }
+        .favorite-active { color: #ef4444 !important; }
+        .modal { transition: opacity 0.25s ease; }
+        body.modal-active { overflow: hidden; }
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-orange-500 flex items-center">
+                <i class="fas fa-utensils mr-2"></i> FoodieHub
+            </a>
+            <div class="hidden md:flex space-x-8 font-medium">
+                <a href="#home" class="hover:text-orange-500">Home</a>
+                <a href="#recipes" class="hover:text-orange-500">Recipes</a>
+                <a href="#about" class="hover:text-orange-500">About</a>
+                <a href="#contact" class="hover:text-orange-500">Contact</a>
+            </div>
+            <button class="md:hidden text-2xl"><i class="fas fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <section id="home" class="relative h-[400px] flex items-center justify-center text-white">
+        <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1600&q=80" 
+             class="absolute inset-0 w-full h-full object-cover brightness-50" alt="Hero Food">
+        <div class="relative text-center px-4">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4">Master the Art of Cooking</h1>
+            <p class="text-xl mb-8">Discover thousands of recipes from around the world.</p>
+        </div>
+    </section>
+
+    <section id="recipes" class="container mx-auto px-6 py-16">
+        <h2 class="text-3xl font-bold mb-8 text-center">Featured Recipes</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden recipe-card" onclick="openRecipe('salad')">
+                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80" class="w-full h-48 object-cover" alt="Salad">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm text-orange-500 font-bold uppercase">Healthy</span>
+                        <button onclick="event.stopPropagation(); toggleFavorite(this)" class="text-gray-400 hover:text-red-500"><i class="fas fa-heart"></i></button>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Quinoa Summer Salad</h3>
+                    <p class="text-gray-600 text-sm">Light, protein-packed, and refreshing.</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden recipe-card" onclick="openRecipe('pancakes')">
+                <img src="https://images.unsplash.com/photo-1506084868730-342b1f452df0?auto=format&fit=crop&w=800&q=80" class="w-full h-48 object-cover" alt="Pancakes">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm text-orange-500 font-bold uppercase">Breakfast</span>
+                        <button onclick="event.stopPropagation(); toggleFavorite(this)" class="text-gray-400 hover:text-red-500"><i class="fas fa-heart"></i></button>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Fluffy Berry Pancakes</h3>
+                    <p class="text-gray-600 text-sm">Golden brown pancakes with fresh blueberries.</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden recipe-card" onclick="openRecipe('pizza')">
+                <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80" class="w-full h-48 object-cover" alt="Pizza">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm text-orange-500 font-bold uppercase">Italian</span>
+                        <button onclick="event.stopPropagation(); toggleFavorite(this)" class="text-gray-400 hover:text-red-500"><i class="fas fa-heart"></i></button>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Rustic Margherita Pizza</h3>
+                    <p class="text-gray-600 text-sm">The Italian classic with fresh mozzarella.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="favorites" class="bg-orange-50 py-10">
+        <div class="container mx-auto px-6 text-center">
+            <div id="favorites-list" class="text-gray-500 italic">Click the heart icon to save recipes!</div>
+        </div>
+    </section>
+
+    <div id="recipeModal" class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center z-[100]">
+        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50" onclick="closeRecipe()"></div>
+        <div class="modal-container bg-white w-11/12 md:max-w-2xl mx-auto rounded shadow-lg z-50 overflow-y-auto max-h-[90vh]">
+            <div class="py-4 text-left px-6">
+                <div class="flex justify-between items-center pb-3 border-b">
+                    <p class="text-2xl font-bold" id="modalTitle"></p>
+                    <div class="modal-close cursor-pointer z-50" onclick="closeRecipe()">
+                        <i class="fas fa-times text-2xl text-gray-500 hover:text-black"></i>
+                    </div>
+                </div>
+                <div class="my-5">
+                    <img id="modalImg" src="" class="w-full h-64 object-cover rounded mb-6">
+                    <h4 class="font-bold text-orange-500 mb-2 underline">Ingredients</h4>
+                    <ul id="modalIngredients" class="list-disc list-inside mb-6 space-y-1 text-gray-700"></ul>
+                    <h4 class="font-bold text-orange-500 mb-2 underline">Instructions</h4>
+                    <ol id="modalSteps" class="list-decimal list-inside space-y-2 text-gray-700"></ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section id="contact" class="bg-gray-900 text-white py-16 text-center">
+        <h2 class="text-3xl font-bold mb-4">Want more recipes?</h2>
+        <p class="mb-8 text-gray-400">Join our newsletter for weekly culinary inspiration.</p>
+        <div class="max-w-md mx-auto flex px-4">
+            <input type="email" placeholder="Enter email" class="w-full p-3 rounded-l text-black outline-none">
+            <button class="bg-orange-500 px-6 py-3 rounded-r font-bold hover:bg-orange-600 transition">Join</button>
+        </div>
+    </section>
+
+    <footer class="bg-black text-gray-500 py-6 text-center border-t border-gray-800">
+        <p>&copy; 2026 FoodieHub. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Recipe Data Object
+        const recipeData = {
+            salad: {
+                title: "Quinoa Summer Salad",
+                img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+                ingredients: ["1 cup Quinoa", "2 Avocados", "Cherry tomatoes", "Fresh Lime juice", "Cilantro", "Olive oil"],
+                steps: ["Rinse and boil quinoa for 15 mins.", "Chop vegetables and avocados.", "Mix lime juice and olive oil for dressing.", "Toss everything together and serve chilled."]
+            },
+            pancakes: {
+                title: "Fluffy Berry Pancakes",
+                img: "https://images.unsplash.com/photo-1506084868730-342b1f452df0?auto=format&fit=crop&w=800&q=80",
+                ingredients: ["2 cups Flour", "2 Eggs", "1.5 cups Milk", "Blueberries", "Baking powder", "Butter"],
+                steps: ["Whisk dry and wet ingredients in separate bowls.", "Combine and fold in fresh blueberries.", "Heat a buttered griddle over medium heat.", "Cook until bubbles form, then flip until golden."]
+            },
+            pizza: {
+                title: "Rustic Margherita Pizza",
+                img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80",
+                ingredients: ["Pizza dough", "Tomato sauce", "Fresh Mozzarella", "Fresh Basil", "Sea salt", "Olive oil"],
+                steps: ["Preheat oven to 450°F (230°C).", "Roll out dough on a floured surface.", "Spread sauce and top with cheese slices.", "Bake for 12-15 mins until crust is crisp and charred."]
+            }
+        };
+
+        function openRecipe(id) {
+            const recipe = recipeData[id];
+            document.getElementById('modalTitle').innerText = recipe.title;
+            document.getElementById('modalImg').src = recipe.img;
+            
+            const ingList = document.getElementById('modalIngredients');
+            ingList.innerHTML = recipe.ingredients.map(i => `<li>${i}</li>`).join('');
+            
+            const stepList = document.getElementById('modalSteps');
+            stepList.innerHTML = recipe.steps.map(s => `<li>${s}</li>`).join('');
+
+            const modal = document.getElementById('recipeModal');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            document.body.classList.add('modal-active');
+        }
+
+        function closeRecipe() {
+            const modal = document.getElementById('recipeModal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            document.body.classList.remove('modal-active');
+        }
+
+        function toggleFavorite(btn) {
+            const icon = btn.querySelector('i');
+            icon.classList.toggle('favorite-active');
+            icon.classList.toggle('fas');
+            icon.classList.toggle('far');
+            
+            const activeFavs = document.querySelectorAll('.favorite-active').length;
+            const favList = document.getElementById('favorites-list');
+            favList.innerText = activeFavs > 0 ? `You have ${activeFavs} favorite(s) saved!` : "Click the heart icon to save recipes!";
+            favList.className = activeFavs > 0 ? "text-orange-600 font-bold" : "text-gray-500 italic";
+        }
+    </script>
+</body>
+</html>
