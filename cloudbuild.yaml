@@ -13,9 +13,9 @@ steps:
     - set
     - image 
     - deployment/static-site
-    - static-site=us-esat1-docker.pkg.dev/gcp-demo-project-487205/cloud-build-demo/static-site:$SHORT_SHA
+    - static-site=us-east1-docker.pkg.dev/gcp-demo-project-487205/cloud-build-demo/static-site:$SHORT_SHA
   env:
-    - 'CLOUDSDK_COMPUTE_REGION=us-central1-c'
+    - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
     - 'CLOUDSDK_CONTAINER_CLUSTER=terraform-gke-cluster'
 
 images:
